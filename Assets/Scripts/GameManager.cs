@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private CubeSpawer[] spawers;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        spawers = FindObjectsOfType<CubeSpawer>();
     }
 
     // Update is called once per frame
@@ -19,7 +20,11 @@ public class GameManager : MonoBehaviour
             {
                 MovingCube.CurrentCube.Stop();
             }
-            FindObjectOfType<CubeSpawer>().SpawnCube();
+
+            int index = Random.Range(0, spawers.Length);
+            Debug.Log("index = " + index);
+
+            spawers[index].SpawnCube();
         }
     }
 }
