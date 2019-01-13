@@ -23,6 +23,19 @@ public class CubeSpawer : MonoBehaviour
         lastCube = GameObject.Find("Start").GetComponent<MovingCube>();
     }
 
+    void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (currentCube != null)
+            {
+                currentCube.Stop();
+            }
+
+            SpawnCube();
+        }
+    }
+
     public void SpawnCube()
     {
         GameObject cube = Instantiate(cubePrefab);
