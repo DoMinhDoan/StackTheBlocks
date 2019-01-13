@@ -67,7 +67,7 @@ public class MovingCube : MonoBehaviour
         
         if (Mathf.Abs(hangover) > lastCubeScale)    // == die
         {
-            spawer.lastCube = null;
+            spawer.lastCube = GameObject.Find("Start").GetComponent<MovingCube>();
             spawer.currentCube = null;
             SceneManager.LoadScene(0);
 
