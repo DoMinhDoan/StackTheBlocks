@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+public enum MoveDirection
+{
+    X,
+    Z
+}
+
 [System.Serializable]
 public class CubeData
 {
@@ -69,10 +77,4 @@ public class CubeSpawer : MonoBehaviour
             Gizmos.DrawWireCube(cubeSpawnData[i].spawnPoint.transform.position, cubePrefab.transform.localScale);
         }        
     }
-}
-
-public enum MoveDirection
-{
-    X,
-    Z
 }
