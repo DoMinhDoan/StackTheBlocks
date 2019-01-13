@@ -45,39 +45,34 @@ public class MovingCube : MonoBehaviour
 
     internal void Stop()
     {
+        moveSpeed = 0.0f;
+        float hangover, lastCubeScale;
         if (MoveDirection == MoveDirection.Z)
         {
-            moveSpeed = 0.0f;
-
-            float hangover = transform.position.z - spawer.lastCube.transform.position.z;
-            if (Mathf.Abs(hangover) > spawer.lastCube.transform.localScale.z)
-            {
-                spawer.lastCube = null;
-                spawer.currentCube = null;
-                SceneManager.LoadScene(0);
-            }
+            hangover = transform.position.z - spawer.lastCube.transform.position.z;
+            lastCubeScale = spawer.lastCube.transform.localScale.z;
 
             float direction = hangover > 0 ? 1.0f : -1.0f;
-
             SplitCubeOnZ(hangover, direction);
         }
         else
         {
-            moveSpeed = 0.0f;
-
-            float hangover = transform.position.x - spawer.lastCube.transform.position.x;
-            if (Mathf.Abs(hangover) > spawer.lastCube.transform.localScale.x)
-            {
-                spawer.lastCube = null;
-                spawer.currentCube = null;
-                SceneManager.LoadScene(0);
-            }
+            hangover = transform.position.x - spawer.lastCube.transform.position.x;
+            lastCubeScale = spawer.lastCube.transform.localScale.x;
 
             float direction = hangover > 0 ? 1.0f : -1.0f;
-
             SplitCubeOnX(hangover, direction);
         }
 
+        
+        if (Mathf.Abs(hangover) > lastCubeScale)    // == die
+        {
+            spawer.lastCube = null;
+            spawer.currentCube = null;
+            SceneManager.LoadScene(0);
+
+            return;
+        }
         spawer.lastCube = this;
     }
 
