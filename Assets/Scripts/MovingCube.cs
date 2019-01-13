@@ -8,21 +8,20 @@ public class MovingCube : MonoBehaviour
 {
     public float moveSpeed = 1.0f;
 
-    public static MovingCube CurrentCube { get; private set; }
-    public static MovingCube LastCube { get; private set; }
-
     public MoveDirection MoveDirection { get; set; }
 
-    void OnEnable()
+    private CubeSpawer spawer;
+
+    void Awake()
     {
-        if(LastCube == null)
-        {
-            LastCube = GameObject.Find("Start").GetComponent<MovingCube>();
-        }
-        CurrentCube = this;
+        spawer = FindObjectOfType<CubeSpawer>();
+    }
+
+    void Start()
+    {
         GetComponent<Renderer>().material.color = GetRandomColor();
 
-        transform.localScale = new Vector3(LastCube.transform.localScale.x, transform.localScale.y, LastCube.transform.localScale.z);
+        transform.localScale = new Vector3(spawer.lastCube.transform.localScale.x, transform.localScale.y, spawer.lastCube.transform.localScale.z);
     }
 
     private Color GetRandomColor()
@@ -50,11 +49,11 @@ public class MovingCube : MonoBehaviour
         {
             moveSpeed = 0.0f;
 
-            float hangover = transform.position.z - LastCube.transform.position.z;
-            if (Mathf.Abs(hangover) > LastCube.transform.localScale.z)
+            float hangover = transform.position.z - spawer.lastCube.transform.position.z;
+            if (Mathf.Abs(hangover) > spawer.lastCube.transform.localScale.z)
             {
-                LastCube = null;
-                CurrentCube = null;
+                spawer.lastCube = null;
+                spawer.currentCube = null;
                 SceneManager.LoadScene(0);
             }
 
@@ -66,11 +65,11 @@ public class MovingCube : MonoBehaviour
         {
             moveSpeed = 0.0f;
 
-            float hangover = transform.position.x - LastCube.transform.position.x;
-            if (Mathf.Abs(hangover) > LastCube.transform.localScale.x)
+            float hangover = transform.position.x - spawer.lastCube.transform.position.x;
+            if (Mathf.Abs(hangover) > spawer.lastCube.transform.localScale.x)
             {
-                LastCube = null;
-                CurrentCube = null;
+                spawer.lastCube = null;
+                spawer.currentCube = null;
                 SceneManager.LoadScene(0);
             }
 
@@ -79,15 +78,15 @@ public class MovingCube : MonoBehaviour
             SplitCubeOnX(hangover, direction);
         }
 
-        LastCube = this;
+        spawer.lastCube = this;
     }
 
     private void SplitCubeOnZ(float hangover, float direction)
     {
-        float newZSize = LastCube.transform.localScale.z - Mathf.Abs(hangover);
+        float newZSize = spawer.lastCube.transform.localScale.z - Mathf.Abs(hangover);
         float fallingBlockSize = transform.localScale.z - newZSize;
 
-        float newZPosition = LastCube.transform.position.z + (hangover / 2);
+        float newZPosition = spawer.lastCube.transform.position.z + (hangover / 2);
 
         transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, newZSize);
         transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
@@ -100,10 +99,10 @@ public class MovingCube : MonoBehaviour
 
     private void SplitCubeOnX(float hangover, float direction)
     {
-        float newZSize = LastCube.transform.localScale.x - Mathf.Abs(hangover);
+        float newZSize = spawer.lastCube.transform.localScale.x - Mathf.Abs(hangover);
         float fallingBlockSize = transform.localScale.x - newZSize;
 
-        float newZPosition = LastCube.transform.position.x + (hangover / 2);
+        float newZPosition = spawer.lastCube.transform.position.x + (hangover / 2);
 
         transform.localScale = new Vector3(newZSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newZPosition, transform.position.y, transform.position.z);

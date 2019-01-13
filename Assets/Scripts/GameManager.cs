@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private CubeSpawer[] spawers;
-    // Start is called before the first frame update
+    private CubeSpawer spawer;
+
     void Awake()
     {
-        spawers = FindObjectsOfType<CubeSpawer>();
+        spawer = FindObjectOfType<CubeSpawer>();
     }
 
     // Update is called once per frame
@@ -16,15 +16,12 @@ public class GameManager : MonoBehaviour
     {
         if(Input.GetButtonDown("Fire1"))
         {
-            if(MovingCube.CurrentCube != null)
+            if(spawer.currentCube != null)
             {
-                MovingCube.CurrentCube.Stop();
+                spawer.currentCube.Stop();
             }
 
-            int index = Random.Range(0, spawers.Length);
-            Debug.Log("index = " + index);
-
-            spawers[index].SpawnCube();
+            spawer.SpawnCube();
         }
     }
 }

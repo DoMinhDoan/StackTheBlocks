@@ -2,34 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class CubeData
+{
+    public GameObject spawnPoint;
+    public MoveDirection moveDirection;
+}
+
 public class CubeSpawer : MonoBehaviour
 {
     public GameObject cubePrefab;
-    public MoveDirection moveDirection;
+
+    public MovingCube currentCube;
+    public MovingCube lastCube;
+
+    public CubeData[] cubeSpawnData;
+
+    void Awake()
+    {
+        lastCube = GameObject.Find("Start").GetComponent<MovingCube>();
+    }
 
     public void SpawnCube()
     {
         GameObject cube = Instantiate(cubePrefab);
-        if(MovingCube.LastCube != null && MovingCube.LastCube.gameObject != GameObject.Find("Start"))
-        {
-            float x = moveDirection == MoveDirection.X ? transform.position.x : MovingCube.LastCube.transform.position.x;
-            float z = moveDirection == MoveDirection.Z ? transform.position.z : MovingCube.LastCube.transform.position.z;
 
-            cube.transform.position = new Vector3(x, MovingCube.LastCube.transform.position.y + cube.transform.localScale.y, z);
+        currentCube = cube.GetComponent<MovingCube>();
+
+        int index = Random.Range(0, cubeSpawnData.Length);
+        Debug.Log("index = " + index);
+
+        if (lastCube != null && lastCube.gameObject != GameObject.Find("Start"))
+        {
+            float x = cubeSpawnData[index].moveDirection == MoveDirection.X ? cubeSpawnData[index].spawnPoint.transform.position.x : lastCube.transform.position.x;
+            float z = cubeSpawnData[index].moveDirection == MoveDirection.Z ? cubeSpawnData[index].spawnPoint.transform.position.z : lastCube.transform.position.z;
+
+            cube.transform.position = new Vector3(x, lastCube.transform.position.y + cube.transform.localScale.y, z);
         }
         else
         {
-            cube.transform.position = transform.position;
+            cube.transform.position = cubeSpawnData[index].spawnPoint.transform.position;
         }
 
-        cube.GetComponent<MovingCube>().MoveDirection = moveDirection;
+        cube.GetComponent<MovingCube>().MoveDirection = cubeSpawnData[index].moveDirection;
         
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position, cubePrefab.transform.localScale);
+        for(int i = 0; i < cubeSpawnData.Length; i++)
+        {
+            Gizmos.DrawWireCube(cubeSpawnData[i].spawnPoint.transform.position, cubePrefab.transform.localScale);
+        }        
     }
 }
 
